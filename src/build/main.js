@@ -6,12 +6,12 @@ const calc = {
 };
 /*------------------------------- Variable Declarations -------------------------*/
 const buttonContainer = document.querySelector("#calculator-container");
-const currentDisplay = document.getElementById("current-display");
-const alertDisplay = document.getElementById("alert-display");
+const currentDisplay = document.querySelector("#current-display");
+const alertDisplay = document.querySelector("#alert-display");
 const dropdowns = document.querySelectorAll(".dropdown");
-const input = document.getElementById("input");
-const memoryDisplay = document.getElementById("memory-display");
-const flipBtn = document.getElementById("flipBtn");
+const input = document.querySelector("#input");
+const memoryDisplay = document.querySelector("#memory-display");
+const flipBtn = document.querySelector("#flipBtn");
 memoryDisplay.value = "0";
 let memory = "0";
 let degMode = true;
@@ -55,11 +55,6 @@ function display(obj) {
     let func = obj.getAttribute("data-func");
     let actualVal = obj.getAttribute("data-value");
     actualExp = String(actualExp);
-    //Max Limit of the display is 25.
-    if (input.value.length >= 25) {
-        showAlert("Maximum Limit Reached.");
-        return;
-    }
     if (actualExp === "" &&
         (type === "operator" || type === "special-operator")) {
         showAlert("Enter operand first");
@@ -244,6 +239,7 @@ function display(obj) {
             actualExp += addVal;
         }
         currentDisplay.value = actualExp + " = ";
+        input.focus();
     }
 }
 //DEG to RAD flip button EventListener
@@ -556,7 +552,6 @@ function getVal(exp) {
         let i = exp.length - 1;
         while (!calc.operators.includes(exp[i])) {
             i--;
-            console.log(i);
             if (exp[i] == "(") {
                 return exp.slice(i + 1, exp.length);
             }
