@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <!-- google Icons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
+    <title>Scientific Calculator</title>
+    <link rel="shortcut icon" href="./src/images/favicon-.jpg" />
+    <link rel="stylesheet" href="./src/CSS/style.css" />
+    <script src="./build/main.js" defer type="module"></script>
+  </head>
+  
+  <body>
+    <section id="calculator-container">
+      <!-- Top section Container -->
+      <div class="container" id="top-section">
+        <!-- Input and current display row-->
+        <div class="row">
+          <input type="text" id="current-display" placeholder="" readonly />
+          <input type="text" id="input" placeholder="0" />
+        </div>
+
+        <!-- Alert display row-->
+        <div class="row ml-1 d-flex align-items-center">
+          <input type="text" id="alert-display" placeholder="" readonly />
+        </div>
+
+        <!-- Memory display row-->
+        <div class="row ml-1 d-flex align-items-center invisible">
+          Mem:<input type="text" id="memory-display" placeholder="" readonly />
+        </div>
+
+        <!-- Calculator body row-1 -->
+        <div class="row">
+          <div class="col" id="flipBtn">
+            <button value="btn-flip" class="button-flip">DEG</button>
+            <button value="btn-flip" class="button-flip d-none">RAD</button>
+          </div>
+          <div class="col"><button data-func="F-E">F-E</button></div>
+          <div class="col"></div>
+          <div class="col"></div>
+          <div class="col"></div>
+        </div>
+
+        <!-- (Memory buttons) Calculator body row-2 -->
+        <div class="row">
+          <div class="col"><button value="MC" data-func="memory" disabled>MC</button></div>
+          <div class="col"><button value="MR" data-func="memory" disabled>MR</button></div>
+          <div class="col"><button value="M+" data-func="memory">M+</button></div>
+          <div class="col"><button value="M-" data-func="memory">M-</button></div>
+          <div class="col"><button value="MS" data-func="memory">MS</button></div>
+        </div>
+
+        <!-- (Functions & Trigonometry DropDowns) Calculator body row-3 -->
+        <div class="row pt-2 pb-2">
+          <div class="col-5 d-flex align-items-center dropdown">
+            <em class="mr-2">&lrtri;</em>
+            <span>Trigonometry</span>
+            <span class="material-symbols-outlined"> expand_more</span>
+            <div class="dropdown-items dropdown-items-1">
+              <button type="button" class="dropdown-item" value="sin(" data-func="sin(">sin</button>
+              <button type="button" class="dropdown-item" value="cos(" data-func="cos(">cos</button>
+              <button type="button" class="dropdown-item" value="tan(" data-func="tan(">tan</button>
+              <button type="button" class="dropdown-item" value="asin(" data-func="asin(">sin<sup>-1</sup></button>
+              <button type="button" class="dropdown-item" value="acos(" data-func="acos(">cos<sup>-1</sup></button>
+              <button type="button" class="dropdown-item" value="atan(" data-func="atan(">tan<sup>-1</sup></button>
+            </div>
+          </div>
+
+          <div class="col-4 d-flex dropdown">
+            <em class="mr-2">&fnof;</em>
+            <span>Function</span>
+            <span class="material-symbols-outlined">expand_more</span>
+            <div class="dropdown-items dropdown-items-2">
+              <button type="button" class="dropdown-item" value="abs(" data-func="abs(">|x|</button>
+              <button type="button" class="dropdown-item" value="floor(" data-func="floor(">&#8970;x&#8971;</button>
+              <button type="button" value="ceil(" data-func="ceil(" class="dropdown-item">&#8968;x&#8969;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom section container -->
+      <div class="container" id="bottom-section">
+        <!-- row-1 -->
+        <div class="row">
+          <div class="col">
+            <button value="flip" id="flipCol">2<small><sup>nd</sup></small></button>
+          </div>
+          <div class="col">
+            <button value="&pi;" data-value="3.14159" data-type="constant"> &pi;</button>
+          </div>
+          <div class="col">
+            <button value="e" data-value="2.7187" data-type="constant">e</button>
+          </div>
+          <div class="col">
+            <button value="clear">C</button>
+          </div>
+          <div class="col">
+            <button value="backspace" class="material-symbols-outlined">backspace</button>
+          </div>
+        </div>
+
+        <!-- row-2 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="^2" data-type="operator"> x<small><sup>2</sup></small></button>
+            <button class="d-none flip-btns" value="^3" data-type="operator"> x<small><sup>3</sup></small></button>
+          </div>
+          <div class="col">
+            <button value="1/" data-func="1/"><sup>1</sup>/x</button>
+          </div>
+          <div class="col">
+            <button value="abs(" data-func="abs(">|x|</button>
+          </div>
+          <div class="col">
+            <button value="E" data-value="*10^" data-type="special-operator">exp</button>
+          </div>
+          <div class="col">
+            <button value=" mod " data-value="&percnt;" data-type="special-operator">mod</button>
+          </div>
+        </div>
+
+        <!-- row-3 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="^(1/2)" data-type="operator"><small><sup>2</sup></small>&Sqrt; x</button>
+            <button class="d-none flip-btns" value="^(1/3)" data-type="operator">
+              <small><sup>3</sup></small
+              >&Sqrt; x
+            </button>
+          </div>
+          <div class="col">
+            <button value="(" data-func="(">(</button>
+          </div>
+          <div class="col">
+            <button value=")" data-func=")">)</button>
+          </div>
+          <div class="col">
+            <button value="!" data-type="factorial-func"><em>n</em>!</button>
+          </div>
+          <div class="col">
+            <button value="/" data-type="operator">&divide;</button>
+          </div>
+        </div>
+
+        <!-- row-4 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="^" data-type="operator">x<small><sup>y</sup></small></button>
+            <button class="d-none flip-btns" value="^(1/" data-type="operator">
+              <small><sup>y</sup></small
+              >&Sqrt; x
+            </button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="7" data-type="operand">7</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="8" data-type="operand">8</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="9" data-type="operand">9</button>
+          </div>
+          <div class="col">
+            <button value="*" data-type="operator">&times;</button>
+          </div>
+        </div>
+
+        <!-- row-5 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="10^" data-func="10^">
+              10<small><sup>x</sup></small>
+            </button>
+            <button class="d-none flip-btns" value="2^" data-func="2^">
+              2<small><sup>x</sup></small>
+            </button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="4" data-type="operand">4</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="5" data-type="operand">5</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="6" data-type="operand">6</button>
+          </div>
+          <div class="col">
+            <button value="-" data-type="operator">&minus;</button>
+          </div>
+        </div>
+
+        <!-- row-6 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="log(" data-func="log(">log</button>
+            <button class="d-none flip-btns" value="log2(" data-func="log2(">
+              log<sub>2</sub>x
+            </button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="1" data-type="operand">1</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="2" data-type="operand">2</button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="3" data-type="operand">3</button>
+          </div>
+          <div class="col">
+            <button value="+" data-type="operator">+</button>
+          </div>
+        </div>
+
+        <!-- row-7 -->
+        <div class="row">
+          <div class="col">
+            <button class="flip-btns" value="ln(" data-func="ln(">ln</button>
+            <button class="d-none flip-btns" value="e^" data-func="2.7187^">
+              e<sup>x</sup>
+            </button>
+          </div>
+          <div class="col bg-white">
+            <button value="(-"><sup>&plus;</sup>/<small>&minus;</small></button>
+          </div>
+          <div class="col bg-white">
+            <button class="operand" value="0" data-type="operand">0</button>
+          </div>
+          <div class="col bg-white">
+            <button value=".">.</button>
+          </div>
+          <div class="col">
+            <button value="equalTo" id="equalBtn">=</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
