@@ -10,10 +10,10 @@ const currentDisplay = document.getElementById("current-display");
 const alertDisplay = document.getElementById("alert-display");
 const dropdowns = document.querySelectorAll(".dropdown");
 const input = document.getElementById("input");
-// const memoryDisplay: HTMLInputElement = document.getElementById("memory-display")! as HTMLInputElement;
+const memoryDisplay = document.getElementById("memory-display");
 const flipBtn = document.getElementById("flipBtn");
-// memoryDisplay.value = "0";
-// let memory: string = "0";
+memoryDisplay.value = "0";
+let memory = "0";
 let degMode = true;
 let actualExp = "";
 /*------------------------------- Event Listeners-------------------------*/
@@ -88,7 +88,7 @@ function display(obj) {
             }
         }
         else if (func == "memory") {
-            // memoryHandler(obj);
+            memoryHandler(obj);
             return;
         }
         else if (func == "F-E") {
@@ -265,6 +265,80 @@ dropdowns.forEach((dropdown) => {
             element.lastElementChild.classList.toggle("d-flex");
     });
 });
+/*----------------------- Memory functionalities Handler ------------------------*/
+function memoryHandler(obj) {
+    const parent = obj.parentElement?.parentElement;
+    let MCBtn = parent?.firstElementChild
+        ?.firstElementChild;
+    let MRBtn = parent?.firstElementChild?.nextElementSibling
+        ?.firstElementChild;
+    let val = obj.getAttribute("value");
+    switch (val) {
+        case "MS":
+            if (!input.value)
+                input.value = "0";
+            else
+                input.value = String(evaluate(actualExp));
+            memoryDisplay.value = input.value;
+            memoryDisplay.parentElement?.classList.remove("invisible");
+            memory = input.value;
+            MCBtn.disabled = false;
+            MRBtn.disabled = false;
+            currentDisplay.value = "";
+            actualExp = input.value;
+            break;
+        case "MC":
+            memoryDisplay.value = "";
+            memoryDisplay.parentElement?.classList.add("invisible");
+            MCBtn.disabled = true;
+            MRBtn.disabled = true;
+            memory = "";
+            input.value = "";
+            actualExp = "";
+            break;
+        case "MR":
+            if (input.value === "undefined") {
+                input.value = "";
+            }
+            if (!calc.operators.includes(input.value.slice(-1)) && input.value) {
+                input.value += "*" + memory;
+                actualExp += "*" + memory;
+            }
+            else {
+                input.value += memory;
+                actualExp += memory;
+            }
+            currentDisplay.value = actualExp;
+            break;
+        case "M+":
+            memoryOperation("+");
+            break;
+        case "M-":
+            memoryOperation("-");
+            break;
+    }
+    if (isNaN(Number(memory))) {
+        showAlert("Invalid");
+        memory = "";
+        memoryDisplay.value = "";
+    }
+    function memoryOperation(operation) {
+        input.value = String(evaluate(actualExp));
+        if (isNaN(Number(input.value))) {
+            input.value = "0";
+        }
+        memoryDisplay.value =
+            operation === "+"
+                ? String(Number(memoryDisplay.value) + Number(input.value))
+                : String(Number(memoryDisplay.value) - Number(input.value));
+        memoryDisplay.parentElement?.classList.remove("invisible");
+        MCBtn.disabled = false;
+        MRBtn.disabled = false;
+        memory = memoryDisplay.value;
+        currentDisplay.value = "";
+        actualExp = input.value;
+    }
+}
 /*-------------------- ShowAnswer fn shows the answer on display ------------------*/
 function showAnswer() {
     if (isBalancedParanthesis(actualExp) !== 0) {
