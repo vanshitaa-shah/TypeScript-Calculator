@@ -17,13 +17,13 @@ const calc: Calc = {
 const buttonContainer: Element = document.querySelector("#calculator-container")!;
 const currentDisplay: HTMLInputElement = document.getElementById("current-display")! as HTMLInputElement;
 const alertDisplay: HTMLInputElement = document.getElementById("alert-display")! as HTMLInputElement;
-// const dropdowns: NodeListOf<Element> = document.querySelectorAll(".dropdown");
+const dropdowns: NodeListOf<Element> = document.querySelectorAll(".dropdown");
 const input: HTMLInputElement = document.getElementById("input")! as HTMLInputElement;
-const memoryDisplay: HTMLInputElement = document.getElementById("memory-display")! as HTMLInputElement;
-// const flipBtn: HTMLElement = document.getElementById("flipBtn")!;
-memoryDisplay.value = "0";
+// const memoryDisplay: HTMLInputElement = document.getElementById("memory-display")! as HTMLInputElement;
+const flipBtn: HTMLElement = document.getElementById("flipBtn")!;
+// memoryDisplay.value = "0";
 // let memory: string = "0";
-// let degMode: boolean = true;
+let degMode: boolean = true;
 let actualExp: string = "";
 
 /*------------------------------- Event Listeners-------------------------*/
@@ -41,7 +41,7 @@ buttonContainer.addEventListener(
           backspace();
           break;
         case "flip":
-          // flipCol();
+          flipCol();
           break;
         case "btn-flip":
           break;
@@ -49,10 +49,10 @@ buttonContainer.addEventListener(
           showAnswer();
           break;
         case ".":
-          // flotingPointHandler();
+          flotingPointHandler();
           break;
         case "(-":
-          // signHandler();
+          signHandler();
           break;
 
         default:
@@ -109,7 +109,7 @@ function display(obj: HTMLButtonElement): void {
       // memoryHandler(obj);
       return;
     } else if (func == "F-E") {
-      // fractionalToExp();
+      fractionalToExp();
       return;
     } else {
       input.value += val;
@@ -183,9 +183,119 @@ function display(obj: HTMLButtonElement): void {
       actualExp = actualExp.slice(0, -1) + "*" + val;
       input.value = input.value.slice(0, -1) + "*" + val;
     }
+
+    if (
+      val === ")" &&
+      calc.trigoFunc.some((substring) => actualExp.includes(substring))
+    ) {
+      let funcArr = calc.trigoFunc.filter((i) => {
+        return actualExp.includes(i);
+      });
+      let x: number = Number(getVal(actualExp));
+      let start = actualExp.indexOf(funcArr[0]!);
+      let addVal;
+      switch (funcArr[0]) {
+        case "asin(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? (Math.asin(x) * 180) / Math.PI : Math.asin(x);
+          addVal = addVal.toFixed(5);
+          break;
+        case "acos(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? (Math.acos(x) * 180) / Math.PI : Math.acos(x);
+          addVal = addVal.toFixed(5);
+          break;
+        case "atan(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? (Math.atan(x) * 180) / Math.PI : Math.atan(x);
+          addVal = addVal.toFixed(5);
+          break;
+        case "sin(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? Math.sin((x * Math.PI) / 180) : Math.sin(x);
+          addVal = addVal.toFixed(5);
+          break;
+        case "cos(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? Math.cos((x * Math.PI) / 180) : Math.cos(x);
+          addVal = addVal.toFixed(5);
+          break;
+        case "tan(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = degMode ? Math.tan((x * Math.PI) / 180) : Math.tan(x);
+          if (Math.trunc(addVal).toString().length >= 6) {
+            input.value = "infinity";
+            currentDisplay.value = "";
+            actualExp = "";
+            return;
+          }
+          addVal = addVal.toFixed(5);
+          break;
+      }
+      actualExp = actualExp.slice(0, start);
+      actualExp += addVal;
+    } else if (
+      val === ")" &&
+      calc.func.some((substring) => actualExp.includes(substring))
+    ) {
+      let funcArr = calc.func.filter((i) => {
+        return actualExp.includes(i);
+      });
+      let x: number = Number(getVal(actualExp));
+      let start = actualExp.indexOf(funcArr[funcArr.length - 1]!);
+      let addVal;
+      switch (funcArr[funcArr.length - 1]) {
+        case "log2(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.log2(x).toFixed(5);
+          break;
+        case "log(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.log10(x).toFixed(5);
+          break;
+        case "ln(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.log(x).toFixed(5);
+          break;
+        case "abs(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.abs(x);
+          break;
+        case "floor(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.floor(x);
+          break;
+        case "ceil(":
+          x = evaluate(String(getVal(actualExp)));
+          addVal = Math.ceil(x);
+          break;
+      }
+      actualExp = actualExp.slice(0, start);
+      actualExp += addVal;
+    }
     currentDisplay.value = actualExp + " = ";
   }
 }
+
+//DEG to RAD flip button EventListener
+flipBtn.addEventListener("click", () => {
+  if (degMode) degMode = false;
+  else degMode = true;
+  const flipBtns = document.getElementsByClassName("button-flip");
+  for (let i = 0; i < flipBtns.length; i++) {
+    flipBtns[i]!.classList.toggle("d-none");
+  }
+});
+
+// Trigonometry and functions dropdown EventListener
+dropdowns.forEach((dropdown) => {
+  dropdown.addEventListener("click", (e) => {
+    let element: HTMLElement = e.target as HTMLElement;
+    if (element.tagName === "DIV")
+      element.lastElementChild!.classList.toggle("d-flex");
+  });
+});
+
 
 /*-------------------- ShowAnswer fn shows the answer on display ------------------*/
 function showAnswer(): void {
@@ -271,6 +381,105 @@ function isBalancedParanthesis(exp: string) {
   return balanceFactor;
 }
 
+// Handles the floatingPoint related work
+function flotingPointHandler(): void {
+  if (actualExp === "") {
+    showAlert("Enter Number first");
+    return;
+  }
+  if (getVal(actualExp)?.includes(".")) {
+    return;
+  } else {
+    input.value += ".";
+    actualExp += ".";
+    currentDisplay.value = actualExp + "=";
+  }
+}
+
+// Handles the sign(+ -) related work
+function signHandler(): void {
+  if (input.value.slice(-1) === ")") {
+    let start = input.value.lastIndexOf("(");
+    if (input.value[start - 2]) {
+      if (input.value[start - 1] !== "-") {
+        input.value =
+          input.value.slice(0, start) + "-" + input.value.slice(start);
+        let x = evaluate(String(getVal(actualExp)));
+        actualExp = actualExp.slice(0, actualExp.lastIndexOf("(")) + x * -1;
+      } else if (
+        input.value[start - 1] === "-" &&
+        calc.operators.includes(input.value[start - 2]!)
+      ) {
+        input.value =
+          input.value.slice(0, start - 1) + input.value.slice(start);
+        let x = evaluate(String(getVal(actualExp)));
+        if (
+          x < 0 &&
+          !calc.operators.includes(actualExp[actualExp.lastIndexOf("-") - 1]!)
+        )
+          actualExp = actualExp.slice(0, actualExp.lastIndexOf("-") + 1) + x;
+        else
+          actualExp = actualExp.slice(0, actualExp.lastIndexOf("-")) + x * -1;
+      } else {
+        input.value =
+          input.value.slice(0, start) + "-" + input.value.slice(start);
+        let x = evaluate(String(getVal(actualExp)));
+        if (actualExp.slice(-1) !== ")" && actualExp.includes("-"))
+          actualExp = actualExp.slice(0, actualExp.lastIndexOf("-") + 1) + x;
+        else if (actualExp.slice(-1) !== ")") actualExp = "-" + actualExp;
+        else actualExp = actualExp.slice(0, start) + x * -1;
+      }
+    } else {
+      if (input.value[0] !== "-") input.value = "-" + input.value;
+      else input.value = input.value.slice(1);
+      let x = evaluate(String(getVal(actualExp)));
+      actualExp = String(x * -1);
+    }
+  } else {
+    let x: string = getVal(actualExp) as string;
+    if (!x || x.slice(-1) === "(") return;
+    if (
+      actualExp[actualExp.lastIndexOf(x) - 1] &&
+      actualExp[actualExp.lastIndexOf(x) - 1]!.match(/[0-9]/) &&
+      actualExp.slice(-1) !== ")"
+    ) {
+      actualExp = actualExp.slice(0, actualExp.lastIndexOf(x) + 1) + x;
+      input.value = input.value.slice(0, input.value.lastIndexOf(x) + 1) + x;
+    } else {
+      let y = Number(x) * -1;
+      actualExp = actualExp.slice(0, actualExp.lastIndexOf(x)) + y;
+      input.value = input.value.slice(0, input.value.lastIndexOf(x)) + y;
+    }
+  }
+  actualExp = String(actualExp);
+  if (actualExp.includes("---")) {
+    currentDisplay.value = actualExp;
+    currentDisplay.value = currentDisplay.value.replace("---", "-");
+  } else if (actualExp.includes("--")) {
+    currentDisplay.value = actualExp;
+    currentDisplay.value = currentDisplay.value.replace("--", "+");
+  } else currentDisplay.value = actualExp;
+}
+
+// Handles F-E button
+function fractionalToExp(): void {
+  let val = getVal(actualExp) as string;
+  if (val) {
+    let addVal = Number(val).toExponential(4);
+    input.value = input.value.slice(0, input.value.lastIndexOf(val)) + addVal;
+    currentDisplay.value = input.value;
+  }
+}
+
+// Flips the column of fns to some new fns.
+function flipCol(): void {
+  const flipBtn = document.getElementById("flipCol")! as HTMLButtonElement;
+  flipBtn.classList.toggle("color-blue");
+  const hiddenBtns = document.getElementsByClassName("flip-btns");
+  for (let i = 0; i < hiddenBtns.length; i++) {
+    hiddenBtns[i]!.classList.toggle("d-none");
+  }
+}
 
 // Utility function used for getting the values in different scenarios
 function getVal(exp: string): [string, string] | string | undefined {
