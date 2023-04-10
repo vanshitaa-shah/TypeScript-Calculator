@@ -15,16 +15,17 @@ const calc: Calc = {
 /*------------------------------- Variable Declarations -------------------------*/
 
 const buttonContainer: Element = document.querySelector("#calculator-container")!;
-const currentDisplay: HTMLInputElement = document.getElementById("current-display")! as HTMLInputElement;
-const alertDisplay: HTMLInputElement = document.getElementById("alert-display")! as HTMLInputElement;
+const currentDisplay: HTMLInputElement = document.querySelector("#current-display")! ;
+const alertDisplay: HTMLInputElement = document.querySelector("#alert-display")!;
 const dropdowns: NodeListOf<Element> = document.querySelectorAll(".dropdown");
-const input: HTMLInputElement = document.getElementById("input")! as HTMLInputElement;
-const memoryDisplay: HTMLInputElement = document.getElementById("memory-display")! as HTMLInputElement;
-const flipBtn: HTMLElement = document.getElementById("flipBtn")!;
+const input: HTMLInputElement = document.querySelector("#input")! ;
+const memoryDisplay: HTMLInputElement = document.querySelector("#memory-display")!;
+const flipBtn: HTMLElement = document.querySelector("#flipBtn")!;
 memoryDisplay.value = "0";
 let memory: string = "0";
 let degMode: boolean = true;
 let actualExp: string = "";
+
 
 /*------------------------------- Event Listeners-------------------------*/
 //Event-delegation used for all the buttons
@@ -54,7 +55,6 @@ buttonContainer.addEventListener(
         case "(-":
           signHandler();
           break;
-
         default:
           display(element);
           break;
@@ -71,12 +71,7 @@ function display(obj: HTMLButtonElement): void {
   let func = obj.getAttribute("data-func")!;
   let actualVal = obj.getAttribute("data-value")!;
   actualExp = String(actualExp);
-
-  //Max Limit of the display is 25.
-  if (input.value.length >= 25) {
-    showAlert("Maximum Limit Reached.");
-    return;
-  }
+  
   if (
     actualExp === "" &&
     (type === "operator" || type === "special-operator")
@@ -274,6 +269,7 @@ function display(obj: HTMLButtonElement): void {
       actualExp += addVal;
     }
     currentDisplay.value = actualExp + " = ";
+    input.focus();
   }
 }
 
@@ -589,7 +585,6 @@ function getVal(exp: string): [string, string] | string | undefined {
     let i = exp.length - 1;
     while (!calc.operators.includes(exp[i]!)) {
       i--;
-      console.log(i);
       if (exp[i] == "(") {
         return exp.slice(i + 1, exp.length);
       }
