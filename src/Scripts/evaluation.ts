@@ -8,7 +8,7 @@ export default function evaluatePrefix(expression: string): number {
     let token = tokens[i]!;
     if (token.match(/[0-99999]/i)) {
       stack.push(parseFloat(token));
-    } else if (token as Tokens) {
+    } else if (token as Tokens && token!==")" && token!=="(") {
       let operand1: number = stack.pop()!;
       let operand2: number = stack.pop()!;
       let result: number = 0;
@@ -87,7 +87,7 @@ function infixToPrefix(expression: string) {
 function splitByOperator(expression: string): string[] {
   const operators = ["+", "-", "*", "/", "(", ")", "^", "%"];
   let currentNumber = "";
-  const parts = [];
+  const parts:string[] = [];
   for (let i = 0; i < expression.length; i++) {
     const char = expression[i]!;
     if (operators.includes(char)) {
