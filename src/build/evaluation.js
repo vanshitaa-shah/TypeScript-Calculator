@@ -8,7 +8,7 @@ export default function evaluatePrefix(expression) {
         if (token.match(/[0-99999]/i)) {
             stack.push(parseFloat(token));
         }
-        else if (token) {
+        else if (token && token !== ")" && token !== "(") {
             let operand1 = stack.pop();
             let operand2 = stack.pop();
             let result = 0;
