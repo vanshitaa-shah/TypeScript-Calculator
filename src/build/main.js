@@ -389,15 +389,21 @@ function showAlert(msg) {
 /*----------------------------- Some Utiliy functions ----------------------------*/
 // Gives the factorial of a number.
 function fact(n) {
-    if (n == 0 || n == 1) {
-        return 1;
+    try {
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        else if (n < 0) {
+            showAlert("Invalid Input.");
+            return;
+        }
+        else {
+            return n * fact(n - 1);
+        }
     }
-    else if (n < 0) {
-        showAlert("Invalid Input.");
-        return undefined;
-    }
-    else {
-        return n * fact(n - 1);
+    catch {
+        showAlert("Too big Number");
+        return;
     }
 }
 // Checks for the valid paranthesis
