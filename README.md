@@ -57,3 +57,9 @@ Live Link : [https://vanshitaa-shah.github.io/TypeScript-Calculator/](https://va
 - In src -> Scripts : All the typescript files are in this folder.
 - In src -> build : All the generated compiled JS files are in this folder.
 - In tsconfig.json : Target version is set to "ES2020", root directory is "./src/Scripts", out directory is "./src/build" and all the flags are opened and checked.
+
+
+### WorkFlow:
+
+
+![git strategy Workflow](./src/images/workflow.png)
